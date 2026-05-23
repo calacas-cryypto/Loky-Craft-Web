@@ -116,13 +116,13 @@
     <div class="nav-item" onclick="mostrarSeccion('inicio')">🏠 Inicio</div>
     <div class="nav-item" onclick="mostrarFavoritos()">❤️ Favoritos</div>
     <div class="nav-title">CATEGORÍAS</div>
-    <div class="nav-item" onclick="filtrarCategoria('Addons')">🧩 Addons</div>
-    <div class="nav-item" onclick="filtrarCategoria('Mapas')">🗺️ Mapas</div>
-    <div class="nav-item" onclick="filtrarCategoria('Shaders')">⚙️ Shaders</div>
-    <div class="nav-item" onclick="filtrarCategoria('Texturas')">🎨 Texturas</div>
-    <div class="nav-item" onclick="filtrarCategoria('DLC')">📦 DLC</div>
-    <div class="nav-item" onclick="filtrarCategoria('Skins')">👤 Skins</div>
-    <div class="nav-item" onclick="filtrarCategoria('Versiones')">📱 Versiones</div>
+    <div class="nav-item" onclick="filtrarCategoria('addons')">🧩 Addons</div>
+    <div class="nav-item" onclick="filtrarCategoria('mapas')">🗺️ Mapas</div>
+    <div class="nav-item" onclick="filtrarCategoria('shaders')">⚙️ Shaders</div>
+    <div class="nav-item" onclick="filtrarCategoria('texturas')">🎨 Texturas</div>
+    <div class="nav-item" onclick="filtrarCategoria('dlc')">📦 DLC</div>
+    <div class="nav-item" onclick="filtrarCategoria('skins')">👤 Skins</div>
+    <div class="nav-item" onclick="filtrarCategoria('versiones')">📱 Versiones</div>
     <div class="nav-title">AJUSTES</div>
     <button class="theme-btn" onclick="toggleTheme()">🌙 Cambiar Tema</button>
     <div style="font-size:12px;color:var(--sub);margin:10px 0 5px 0;">TAMAÑO DE LETRA</div>
@@ -269,18 +269,31 @@
     });
   });
 
-  // ===== NUEVO: FILTRAR POR CATEGORÍA =====
+  // ===== PARCHE v1.1.2: FILTRAR POR CATEGORÍA =====
   window.filtrarCategoria = function(cat) {
     mostrarSeccion('inicio');
-    document.querySelectorAll('.card').forEach(card => {
-      const categoria = card.querySelector('.tag').innerText;
-      if(categoria === cat) {
-        card.style.display = 'block';
+    toggleMenu();
+    
+    novedadesGrid.innerHTML = '';
+    popularesGrid.innerHTML = '';
+    
+    const filtrados = todosLosMods.filter(mod => 
+      mod.categoria.toLowerCase() === cat.toLowerCase()
+    );
+    
+    if(filtrados.length === 0) {
+      novedadesGrid.innerHTML = '<div class="vacio">No hay ' + cat + ' todavía<br>Pronto nuevos complementos</div>';
+      return;
+    }
+    
+    filtrados.forEach((mod, index) => {
+      const card = crearCard(mod);
+      if(index < 2) {
+        novedadesGrid.innerHTML += card;
       } else {
-        card.style.display = 'none';
+        popularesGrid.innerHTML += card;
       }
     });
-    toggleMenu();
   }
 
   // ===== NUEVO: SISTEMA DE FAVORITOS =====
@@ -308,11 +321,22 @@
     cargarFavoritos();
   }
 
+  // ===== PARCHE v1.1.2: MOSTRAR SECCIÓN =====
   window.mostrarSeccion = function(seccion) {
     if(seccion === 'inicio') {
       document.getElementById('inicio-section').style.display = 'block';
       document.getElementById('favoritos-section').classList.remove('active');
-      document.querySelectorAll('.card').forEach(card => card.style.display = 'block');
+      
+      novedadesGrid.innerHTML = '';
+      popularesGrid.innerHTML = '';
+      todosLosMods.forEach((mod, index) => {
+        const card = crearCard(mod);
+        if(index < 2) {
+          novedadesGrid.innerHTML += card;
+        } else {
+          popularesGrid.innerHTML += card;
+        }
+      });
     }
   }
 
@@ -321,7 +345,7 @@
     const likes = JSON.parse(localStorage.getItem('favoritos') || '[]');
     
     if(likes.length === 0) {
-      favsGrid.innerHTML = '<div class="vacio">No tienes favoritos aún we 😢<br>Dale ❤️ a los addons que te gusten</div>';
+      favsGrid.innerHTML = '<div class="vacio">No tienes favoritos aún<br>Dale 💖 a los addons que te gusten</div>';
       return;
     }
     
