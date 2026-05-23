@@ -17,7 +17,7 @@
   .font-large { --font-size-base: 16px; }
   
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-  body { background: var(--bg); color: var(--text); transition: 0.3s; font-size: var(--font-size-base); overflow: hidden; }
+  body { background: var(--bg); color: var(--text); transition: 0.3s; font-size: var(--font-size-base); }
   
   .header { background: var(--card); padding: 12px; display: flex; align-items: center; position: sticky; top: 0; z-index: 10; }
   .menu-btn { font-size: 24px; margin-right: 12px; cursor: pointer; }
@@ -91,7 +91,7 @@
     text-decoration: none;
   }
 
-  /* LOADER ARREGLADO v1.1.2 */
+  /* LOADER v1.1.3 - FINAL */
   #loader-loky {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: var(--bg); z-index: 9999; display: flex;
@@ -225,7 +225,6 @@
 
   let todosLosMods = [];
   
-  // LOADER CONTROL v1.1.2 - HOTFIX ANTI-ATORO
   const loader = document.getElementById('loader-loky');
   const textoLoader = document.getElementById('texto-loader');
   const progreso = document.getElementById('progreso');
@@ -240,26 +239,9 @@
       loader.classList.add('oculto');
       setTimeout(() => {
         loader.style.display = 'none';
-        document.body.style.overflow = 'auto';
       }, 400);
     }
   }
-
-  // TIMEOUT DE EMERGENCIA 3 SEGUNDOS - ESTE QUITA EL LOADER A HUEVO
-  const timeoutEmergencia = setTimeout(() => {
-    quitarLoader();
-  }, 3000);
-
-  // TIMEOUT DE 2 MINUTOS: SI NO CARGA, REINICIA
-  const timeoutCarga = setTimeout(() => {
-    if(loader && !loader.classList.contains('oculto')) {
-      actualizarLoader('Error de conexión 😢', 100);
-      setTimeout(() => {
-        alert('Error de conexión. La página se va a reiniciar we');
-        location.reload();
-      }, 1500);
-    }
-  }, 120000);
 
   window.toggleMenu = function() {
     document.getElementById('sidebar').classList.toggle('active');
@@ -413,8 +395,6 @@
   
   const modsRef = ref(db, 'mods');
   onValue(modsRef, (snapshot) => {
-    clearTimeout(timeoutCarga);
-    clearTimeout(timeoutEmergencia);
     actualizarLoader('Cargando mods...', 40);
     
     setTimeout(() => {
@@ -448,12 +428,24 @@
     }, 600);
     
   }, (error) => {
-    clearTimeout(timeoutCarga);
-    clearTimeout(timeoutEmergencia);
     console.log(error);
     actualizarLoader('Sin conexión', 100);
     setTimeout(() => quitarLoader(), 1000);
   });
+</script>
+
+<!-- HOTFIX NUCLEAR v1.1.3 - QUITA EL LOADER A HUEVO EN 3 SEG -->
+<script>
+(function() {
+  setTimeout(function() {
+    var l = document.getElementById('loader-loky');
+    if(l && l.style.display !== 'none') {
+      l.style.opacity = '0';
+      l.style.pointerEvents = 'none';
+      setTimeout(function() { l.style.display = 'none'; }, 400);
+    }
+  }, 3000);
+})();
 </script>
 </body>
 </html>
