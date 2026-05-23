@@ -44,7 +44,14 @@
   .card-body { padding: 10px; }
   .tag { background: var(--bg); color: var(--primary); font-size: 10px; padding: 2px 6px; border-radius: 4px; }
   .ver { float: right; background: var(--bg); color: var(--primary); font-size: 10px; padding: 2px 6px; border-radius: 4px; }
-  .card-title { font-size: 14px; margin: 8px 0 4px 0; }
+  .card-title { 
+    font-size: 14px; 
+    margin: 8px 0 4px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
   .card-sub { font-size: 12px; color: var(--sub); }
   .btn { width: 100%; padding: 8px; margin-top: 8px; background: var(--bg); border: 1px solid var(--sub); color: var(--text); border-radius: 8px; cursor: pointer; }
   .btn-fav { 
@@ -67,7 +74,7 @@
   .modal-title { font-size: 18px; font-weight: bold; text-align: center; }
   .modal-sub { font-size: 14px; text-align: center; color: var(--sub); margin: 4px 0 8px 0; }
   .modal-tag { display: block; width: fit-content; margin: 0 auto 12px auto; background: #DCFCE7; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
-  .modal-desc { background: var(--card); padding: 12px; border-radius: 12px; margin: 12px 0; font-size: 14px; line-height: 1.4; }
+  .modal-desc { background: var(--card); padding: 12px; border-radius: 12px; margin: 12px 0; font-size: 14px; line-height: 1.4; white-space: pre-wrap; }
   .download-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
   
   /* SECCIÓN FAVORITOS */
@@ -354,11 +361,31 @@
           <div class="card-title">${mod.nombre}</div>
           <div class="card-sub">By Loky-Craft-App</div>
           <div class="descargas">⬇️ ${mod.descargas || 0} descargas</div>
-          <button class="btn" onclick="abrirDetalles('${mod.nombre.replace(/'/g, "\\'")}','${mod.categoria}','${mod.version}','${mod.desc.replace(/'/g, "\\'")}','${mod.imagen}','${mod.link}','${mod.key}')">DETALLES</button>
+          <button class="btn btn-detalles" data-key="${mod.key}">DETALLES</button>
         </div>
       </div>
     `;
   }
+
+  // PARCHE ANTI-BUG: Delegación de eventos pa descripciones largas con enters
+  document.addEventListener('click', function(e) {
+    if(e.target.classList.contains('btn-detalles')) {
+      const key = e.target.getAttribute('data-key');
+      const mod = todosLosMods.find(m => m.key === key);
+      
+      if(mod) {
+        abrirDetalles(
+          mod.nombre, 
+          mod.categoria, 
+          mod.version, 
+          mod.desc, 
+          mod.imagen, 
+          mod.link, 
+          mod.key
+        );
+      }
+    }
+  });
 
   onValue(ref(db, 'mods'), (snapshot) => {
     novedadesGrid.innerHTML = '';
