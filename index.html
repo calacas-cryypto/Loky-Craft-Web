@@ -20,43 +20,55 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
   body { background: var(--bg); color: var(--text); transition: 0.3s ease-out; font-size: var(--font-size-base); }
   
-  /* ANIMACIONES SUAVES v1.3 */
+  /* ANIMACIONES SUAVES v1.4 */
     * {
-    transition: background 0.3s ease-out, color 0.3s ease-out, transform 0.2s ease-out, opacity 0.3s ease-out;
+    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease-out,
+                box-shadow 0.3s ease-out;
   }
   
   .card {
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease-out;
   }
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(16,185,129,0.15);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(16,185,129,0.2);
   }
   
-  .btn, .download-btn, .theme-btn, .font-btn, .perf-btn {
-    transition: all 0.2s ease-out;
+  .btn, .download-btn, .theme-btn, .font-btn, .perf-btn, .login-social {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .btn:active, .download-btn:active {
-    transform: scale(0.96);
-  }
+  .btn:hover, .download-btn:hover { transform: translateY(-2px); }
+  .btn:active, .download-btn:active { transform: scale(0.95); }
   
   .btn-fav {
-    transition: all 0.3s ease-out;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .btn-fav:active {
-    transform: scale(0.8) rotate(15deg);
+    transform: scale(0.7) rotate(20deg);
   }
   
   .modal-content {
-    animation: modalIn 0.3s ease-out;
+    animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    from { opacity: 0; transform: scale(0.85) translateY(30px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
   
   .sidebar {
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .nav-item {
+    transition: all 0.2s ease-out;
+  }
+  .nav-item:hover { 
+    background: var(--card); 
+    padding-left: 8px; 
+    transform: translateX(4px);
   }
   
   /* OPTIMIZACIÓN POR GAMA */
@@ -88,7 +100,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
     animation: loading 1.5s infinite;
   }
   body[data-gama="baja"] .skeleton::after, body[data-gama="baja-media"] .skeleton::after {
@@ -117,7 +129,7 @@
   .menu-btn { font-size: 24px; cursor: pointer; }
   .search { flex: 1; padding: 8px; border-radius: 20px; border: none; background: var(--bg); color: var(--text); }
   
-  /* LOGIN GOOGLE v1.3 */
+  /* LOGIN GOOGLE v1.4 */
   .login-btn {
     width: 36px;
     height: 36px;
@@ -142,7 +154,6 @@
   .sidebar.active { left: 0; box-shadow: 2px 0 10px rgba(0,0,0,0.3); }
   .logo { color: var(--primary); font-size: 22px; font-weight: bold; margin-bottom: 20px; }
   .nav-item { padding: 12px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; }
-  .nav-item:hover { background: var(--card); padding-left: 8px; }
   .nav-title { color: var(--primary); font-size: 12px; margin: 15px 0 5px 0; }
   .theme-btn { width: 100%; padding: 10px; border: 1px solid var(--primary); background: none; color: var(--primary); border-radius: 20px; margin-top: 10px; cursor: pointer; }
   
@@ -223,6 +234,46 @@
   }
   .download-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
   
+  /* MODAL LOGIN v1.4 */
+  .login-social {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: 1px solid var(--sub);
+    background: var(--card);
+    color: var(--text);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .login-social:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .login-icon { font-size: 20px; }
+  .or-divider {
+    text-align: center;
+    color: var(--sub);
+    margin: 12px 0;
+    font-size: 12px;
+    position: relative;
+  }
+  .or-divider::before, .or-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: var(--sub);
+  }
+  .or-divider::before { left: 0; }
+  .or-divider::after { right: 0; }
+  
   #favoritos-section { display: none; }
   #favoritos-section.active { display: block; }
   .vacio { text-align: center; color: var(--sub); padding: 40px 20px; }
@@ -252,7 +303,7 @@
   <div class="header">
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
     <input class="search" placeholder="Buscar por nombre o categoría" id="buscador">
-    <div class="login-btn" id="loginBtn" onclick="loginGoogle()">👤</div>
+    <div class="login-btn" id="loginBtn" onclick="abrirLogin()">👤</div>
   </div>
 
   <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -315,6 +366,7 @@
     </div>
   </div>
 
+  <!-- MODAL DETALLES -->
   <div class="modal" id="modalDetalles">
     <div class="modal-content">
       <span class="close-modal" onclick="cerrarDetalles()">×</span>
@@ -327,6 +379,48 @@
       </div>
       <div class="modal-footer">
         <button id="modalBtn" class="download-btn">⬇️ DESCARGAR AHORA</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN v1.4 -->
+  <div class="modal" id="modalLogin">
+    <div class="modal-content">
+      <span class="close-modal" onclick="cerrarLogin()">×</span>
+      <div class="modal-body">
+        <div class="modal-title">Iniciar Sesión</div>
+        <div class="modal-sub">Elige cómo quieres entrar</div>
+        
+        <button class="login-social" onclick="loginSocial('google')">
+          <span class="login-icon">🔵</span> Iniciar con Google
+        </button>
+        <button class="login-social" onclick="loginSocial('facebook')">
+          <span class="login-icon">📘</span> Iniciar con Facebook
+        </button>
+        <button class="login-social" onclick="loginSocial('instagram')">
+          <span class="login-icon">📷</span> Iniciar con Instagram
+        </button>
+        <button class="login-social" onclick="loginSocial('youtube')">
+          <span class="login-icon">▶️</span> Iniciar con YouTube
+        </button>
+        <button class="login-social" onclick="loginSocial('tiktok')">
+          <span class="login-icon">🎵</span> Iniciar con TikTok
+        </button>
+        <button class="login-social" onclick="loginSocial('telegram')">
+          <span class="login-icon">✈️</span> Iniciar con Telegram
+        </button>
+        <button class="login-social" onclick="loginSocial('x')">
+          <span class="login-icon">𝕏</span> Iniciar con X (Antes Twitter)
+        </button>
+        
+        <div class="or-divider">OR</div>
+        
+        <button class="login-social" onclick="loginEmail()">
+          <span class="login-icon">📧</span> Correo electrónico
+        </button>
+        <button class="login-social" onclick="loginTelefono()">
+          <span class="login-icon">📱</span> Número de teléfono
+        </button>
       </div>
     </div>
   </div>
@@ -346,7 +440,7 @@
   <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, onValue, get, update, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBXhM5bFmzlVvJ5IZoz7wBiYwK05IGJQdM",
@@ -362,24 +456,58 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  const providerGoogle = new GoogleAuthProvider();
+  const providerFacebook = new FacebookAuthProvider();
 
-  // ===== LOGIN GOOGLE v1.3 =====
+  // ===== LOGIN v1.3 =====
   let usuarioActual = null;
 
-  window.loginGoogle = function() {
+  window.abrirLogin = function() {
     if (usuarioActual) {
-      signOut(auth);
+      if (confirm('¿Cerrar sesión?')) signOut(auth);
     } else {
-      signInWithPopup(auth, provider).catch(e => console.log('Error login:', e));
+      document.getElementById('modalLogin').classList.add('active');
     }
+  }
+
+  window.cerrarLogin = function() {
+    document.getElementById('modalLogin').classList.remove('active');
+  }
+
+  window.loginSocial = function(red) {
+    let provider = null;
+    
+    if (red === 'google') {
+      provider = providerGoogle;
+    } else if (red === 'facebook') {
+      provider = providerFacebook;
+      provider.addScope('email');
+    } else {
+      alert('Para activar ' + red + ':\n1. Ve a Firebase Console > Authentication > Sign-in method\n2. Activa el proveedor ' + red + '\n3. Agrega las credenciales de la app');
+      return;
+    }
+
+    signInWithPopup(auth, provider)
+      .then(() => cerrarLogin())
+      .catch(e => {
+        if (e.code === 'auth/popup-closed-by-user') return;
+        alert('Error: ' + e.message);
+      });
+  }
+
+  window.loginEmail = function() {
+    alert('Login con correo: Actívalo en Firebase Console > Authentication > Sign-in method > Email/Password');
+  }
+
+  window.loginTelefono = function() {
+    alert('Login con teléfono: Actívalo en Firebase Console > Authentication > Sign-in method > Phone');
   }
 
   onAuthStateChanged(auth, (user) => {
     const btn = document.getElementById('loginBtn');
     if (user) {
       usuarioActual = user;
-      btn.innerHTML = `<img src="${user.photoURL}" alt="User">`;
+      btn.innerHTML = `<img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" alt="User">`;
       cargarFavoritosUsuario();
     } else {
       usuarioActual = null;
@@ -388,7 +516,7 @@
     }
   });
 
-  // ===== DETECTOR DE GAMA v1.3 =====
+  // ===== DETECTOR DE GAMA v1.3 FIX =====
   function detectarGama() {
     const memoria = navigator.deviceMemory || 2;
     const nucleos = navigator.hardwareConcurrency || 2;
@@ -422,7 +550,7 @@
   let GAMA_AUTO = detectarGama();
   let GAMA_SELECCIONADA = localStorage.getItem('gamaManual') || 'auto';
   let GAMA = GAMA_SELECCIONADA === 'auto' ? GAMA_AUTO : GAMA_SELECCIONADA;
-  let CONFIG = CONFIG_GAMAS[GAMA];
+  let CONFIG = CONFIG_GAMAS[GAMA]; // AQUÍ ESTABA EL BUG WEE 💀
 
   document.body.setAttribute('data-gama', GAMA);
 
@@ -462,7 +590,7 @@
       GAMA_SELECCIONADA = nuevaGama;
       GAMA = nuevaGama;
     }
-    CONFIG = CONFIG_GAMAS[GAMA];
+    CONFIG = CONFIG_GAMAS[GAMA]; // AQUÍ TAMBIÉN WEE
     MODS_POR_PAGINA = CONFIG.modsPorScroll;
     document.body.setAttribute('data-gama', GAMA);
     document.querySelectorAll('.perf-btn').forEach(btn => btn.classList.remove('active'));
@@ -651,7 +779,6 @@
   const popularesGrid = document.getElementById('populares-grid');
 
   function crearCard(mod, esFavorito = false) {
-    const likes = usuarioActual ? [] : JSON.parse(localStorage.getItem('favoritos') || '[]');
     const activo = esFavorito;
     const imgOptimizada = optimizarImagen(mod.imagen, CONFIG.imagenes);
     return `
@@ -751,6 +878,4 @@
     if (usuarioActual) cargarFavoritosUsuario();
     else cargarFavoritosLocal();
   });
-</script>
-</body>
-</html>
+  </script>
