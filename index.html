@@ -18,27 +18,62 @@
   .font-large { --font-size-base: 16px; }
   
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-  body { background: var(--bg); color: var(--text); transition: 0.3s; font-size: var(--font-size-base); }
+  body { background: var(--bg); color: var(--text); transition: 0.3s ease-out; font-size: var(--font-size-base); }
+  
+  /* ANIMACIONES SUAVES v1.3 */
+    * {
+    transition: background 0.3s ease-out, color 0.3s ease-out, transform 0.2s ease-out, opacity 0.3s ease-out;
+  }
+  
+  .card {
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(16,185,129,0.15);
+  }
+  
+  .btn, .download-btn, .theme-btn, .font-btn, .perf-btn {
+    transition: all 0.2s ease-out;
+  }
+  .btn:active, .download-btn:active {
+    transform: scale(0.96);
+  }
+  
+  .btn-fav {
+    transition: all 0.3s ease-out;
+  }
+  .btn-fav:active {
+    transform: scale(0.8) rotate(15deg);
+  }
+  
+  .modal-content {
+    animation: modalIn 0.3s ease-out;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  
+  .sidebar {
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
   
   /* OPTIMIZACIÓN POR GAMA */
-  body[data-gama="baja"] * {
+  body[data-gama="baja"] *, body[data-gama="baja-media"] * {
     transition: none !important;
     animation: none !important;
   }
-  body[data-gama="baja-media"] * {
-    transition: 0.1s !important;
-    animation: none !important;
+  body[data-gama="baja"] .card:hover, body[data-gama="baja-media"] .card:hover {
+    transform: none !important;
   }
-  body[data-gama="baja"] .btn-fav,
-  body[data-gama="baja-media"] .btn-fav {
+  body[data-gama="baja"] .btn-fav, body[data-gama="baja-media"] .btn-fav {
     backdrop-filter: none !important;
   }
-  body[data-gama="baja"] .card img,
-  body[data-gama="baja-media"] .card img {
+  body[data-gama="baja"] .card img, body[data-gama="baja-media"] .card img {
     image-rendering: pixelated;
   }
-  body[data-gama="baja"] .sidebar,
-  body[data-gama="baja-media"] .sidebar {
+  body[data-gama="baja"] .sidebar, body[data-gama="baja-media"] .sidebar {
     box-shadow: none !important;
   }
   
@@ -53,11 +88,10 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,0.1), transparent);
     animation: loading 1.5s infinite;
   }
-  body[data-gama="baja"] .skeleton::after,
-  body[data-gama="baja-media"] .skeleton::after {
+  body[data-gama="baja"] .skeleton::after, body[data-gama="baja-media"] .skeleton::after {
     animation: none;
     background: var(--sub);
     opacity: 0.2;
@@ -70,14 +104,45 @@
   .skeleton-text { height: 14px; background: var(--bg); margin: 8px 10px; border-radius: 4px; }
   .skeleton-text.short { width: 60%; }
   
-  .header { background: var(--card); padding: 12px; display: flex; align-items: center; position: sticky; top: 0; z-index: 10; }
-  .menu-btn { font-size: 24px; margin-right: 12px; cursor: pointer; }
+  .header { 
+    background: var(--card); 
+    padding: 12px; 
+    display: flex; 
+    align-items: center; 
+    position: sticky; 
+    top: 0; 
+    z-index: 10;
+    gap: 8px;
+  }
+  .menu-btn { font-size: 24px; cursor: pointer; }
   .search { flex: 1; padding: 8px; border-radius: 20px; border: none; background: var(--bg); color: var(--text); }
   
-  .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--bg); transition: 0.3s; z-index: 30; padding: 20px; overflow-y: auto; }
+  /* LOGIN GOOGLE v1.3 */
+  .login-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .login-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--bg); z-index: 30; padding: 20px; overflow-y: auto; }
   .sidebar.active { left: 0; box-shadow: 2px 0 10px rgba(0,0,0,0.3); }
   .logo { color: var(--primary); font-size: 22px; font-weight: bold; margin-bottom: 20px; }
-  .nav-item { padding: 12px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .nav-item { padding: 12px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; }
+  .nav-item:hover { background: var(--card); padding-left: 8px; }
   .nav-title { color: var(--primary); font-size: 12px; margin: 15px 0 5px 0; }
   .theme-btn { width: 100%; padding: 10px; border: 1px solid var(--primary); background: none; color: var(--primary); border-radius: 20px; margin-top: 10px; cursor: pointer; }
   
@@ -88,7 +153,7 @@
   .perf-dropdown { margin-top: 10px; }
   .perf-toggle { width: 100%; padding: 10px; border: 1px solid var(--primary); background: none; color: var(--primary); border-radius: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
   .perf-toggle.active { background: var(--primary); color: var(--bg); }
-  .perf-options { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+  .perf-options { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
   .perf-options.active { max-height: 400px; margin-top: 8px; }
   .perf-btn { width: 100%; padding: 8px; border: 1px solid var(--sub); background: var(--card); color: var(--text); border-radius: 8px; cursor: pointer; margin-bottom: 6px; font-size: 13px; text-align: left; }
   .perf-btn.active { border-color: var(--primary); background: var(--primary); color: white; font-weight: bold; }
@@ -187,6 +252,7 @@
   <div class="header">
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
     <input class="search" placeholder="Buscar por nombre o categoría" id="buscador">
+    <div class="login-btn" id="loginBtn" onclick="loginGoogle()">👤</div>
   </div>
 
   <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -195,6 +261,7 @@
     <div class="nav-item" onclick="mostrarSeccion('inicio')">🏠 Inicio</div>
     <div class="nav-item" onclick="mostrarFavoritos()">❤️ Favoritos</div>
     <div class="nav-title">CATEGORÍAS</div>
+    <div class="nav-item" onclick="filtrarCategoria('optimizados')">⚡ Complementos Optimizados</div>
     <div class="nav-item" onclick="filtrarCategoria('addons')">🧩 Addons</div>
     <div class="nav-item" onclick="filtrarCategoria('mapas')">🗺️ Mapas</div>
     <div class="nav-item" onclick="filtrarCategoria('shaders')">⚙️ Shaders</div>
@@ -232,16 +299,12 @@
   <div id="inicio-section">
     <div class="section">
       <div class="section-title">🟢 Novedades</div>
-      <div class="grid" id="novedades-grid">
-        <!-- SKELETONS SE PINTAN AQUÍ -->
-      </div>
+      <div class="grid" id="novedades-grid"></div>
     </div>
 
     <div class="section">
       <div class="section-title">🔥 Populares</div>
-      <div class="grid" id="populares-grid">
-        <!-- AQUÍ SE LLENAN SOLOS LOS ADDONS DE FIREBASE -->
-      </div>
+      <div class="grid" id="populares-grid"></div>
     </div>
   </div>
 
@@ -269,20 +332,21 @@
   </div>
 
   <div class="footer">
-    <div class="logo-footer">⬡ Loky-Craft v1.2</div>
+    <div class="logo-footer">⬡ Loky-Craft v1.3</div>
     <div>© 2026 Loky-Craft-Web.</div>
     <div style="margin-top:8px;">
       Desarrollo: JRLOKY-ESTUDIOS Diseño: Loky-Craft Servidor: Loky-Craft 
-      <a href="https://whatsapp.com/channel/0029VbCcnLR3gvWR1heP821l" target="_blank">JRLOKY-ESTUDIOS en WhatsApp Desarrollo de Futuras webs y apps </a> | 
-      <a href="#" onclick="alert('Loky-Craft Reporte de bugs o links caidos: lokycraft359@gmail.com')">Loky-Craft Reporte de bugs o links caidos</a>
+      <a href="https://whatsapp.com/channel/0029VbCcnLR3gvWR1heP821l" target="_blank">JRLOKY-ESTUDIOS en WhatsApp</a> | 
+      <a href="#" onclick="alert('Loky-Craft Reporte de bugs: lokycraft359@gmail.com')">Reporte de bugs</a>
     </div>
     <div style="margin-top:8px;font-size:11px;">
       Minecraft es marca de Mojang Studios. Esta web no está afiliada a Mojang.
     </div>
   </div>
-<script type="module">
+  <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, onValue, get, set, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getDatabase, ref, onValue, get, update, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBXhM5bFmzlVvJ5IZoz7wBiYwK05IGJQdM",
@@ -297,23 +361,45 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  
-  // ===== DETECTOR DE GAMA v1.2 FIX =====
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // ===== LOGIN GOOGLE v1.3 =====
+  let usuarioActual = null;
+
+  window.loginGoogle = function() {
+    if (usuarioActual) {
+      signOut(auth);
+    } else {
+      signInWithPopup(auth, provider).catch(e => console.log('Error login:', e));
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    const btn = document.getElementById('loginBtn');
+    if (user) {
+      usuarioActual = user;
+      btn.innerHTML = `<img src="${user.photoURL}" alt="User">`;
+      cargarFavoritosUsuario();
+    } else {
+      usuarioActual = null;
+      btn.innerHTML = '👤';
+      cargarFavoritosLocal();
+    }
+  });
+
+  // ===== DETECTOR DE GAMA v1.3 =====
   function detectarGama() {
     const memoria = navigator.deviceMemory || 2;
     const nucleos = navigator.hardwareConcurrency || 2;
     const conexion = navigator.connection?.effectiveType || '4g';
-    
     let puntos = 0;
     if(memoria >= 8) puntos += 3;
     else if(memoria >= 6) puntos += 2;
     else if(memoria >= 4) puntos += 1;
-    
     if(nucleos >= 8) puntos += 2;
     else if(nucleos >= 4) puntos += 1;
-    
     if(conexion === '4g' || conexion === '5g') puntos += 1;
-    
     if(puntos >= 6) return 'premium';
     if(puntos >= 5) return 'alta-premium';
     if(puntos >= 4) return 'alta';
@@ -324,33 +410,32 @@
   }
 
   const CONFIG_GAMAS = {
-    'baja':         { modsInicial: 4, modsPorScroll: 4, imagenes: 'low', animaciones: false, blur: false },
-    'baja-media':   { modsInicial: 6, modsPorScroll: 4, imagenes: 'low', animaciones: false, blur: false },
-    'media':        { modsInicial: 4, modsPorScroll: 3, imagenes: 'medium', animaciones: true, blur: false },
-    'media-alta':   { modsInicial: 6, modsPorScroll: 4, imagenes: 'medium', animaciones: true, blur: true },
-    'alta':         { modsInicial: 8, modsPorScroll: 4, imagenes: 'high', animaciones: true, blur: true },
+    'baja': { modsInicial: 4, modsPorScroll: 4, imagenes: 'low', animaciones: false, blur: false },
+    'baja-media': { modsInicial: 6, modsPorScroll: 4, imagenes: 'low', animaciones: false, blur: false },
+    'media': { modsInicial: 4, modsPorScroll: 3, imagenes: 'medium', animaciones: true, blur: false },
+    'media-alta': { modsInicial: 6, modsPorScroll: 4, imagenes: 'medium', animaciones: true, blur: true },
+    'alta': { modsInicial: 8, modsPorScroll: 4, imagenes: 'high', animaciones: true, blur: true },
     'alta-premium': { modsInicial: 10, modsPorScroll: 6, imagenes: 'high', animaciones: true, blur: true },
-    'premium':      { modsInicial: 12, modsPorScroll: 8, imagenes: 'original', animaciones: true, blur: true }
+    'premium': { modsInicial: 12, modsPorScroll: 8, imagenes: 'original', animaciones: true, blur: true }
   };
 
   let GAMA_AUTO = detectarGama();
   let GAMA_SELECCIONADA = localStorage.getItem('gamaManual') || 'auto';
   let GAMA = GAMA_SELECCIONADA === 'auto' ? GAMA_AUTO : GAMA_SELECCIONADA;
   let CONFIG = CONFIG_GAMAS[GAMA];
-  
+
   document.body.setAttribute('data-gama', GAMA);
-  
+
   if(GAMA === 'baja' || GAMA === 'baja-media') {
     console.log = () => {};
   }
-  
+
   let todosLosMods = [];
   let modsMostrados = 0;
   let MODS_POR_PAGINA = CONFIG.modsPorScroll;
   let cargando = false;
   let filtroActual = null;
 
-  // ===== SKELETON HTML =====
   const SKELETON = `
     <div class="skeleton">
       <div class="skeleton-img"></div>
@@ -377,15 +462,12 @@
       GAMA_SELECCIONADA = nuevaGama;
       GAMA = nuevaGama;
     }
-    
     CONFIG = CONFIG_GAMAS[GAMA];
     MODS_POR_PAGINA = CONFIG.modsPorScroll;
     document.body.setAttribute('data-gama', GAMA);
-    
     document.querySelectorAll('.perf-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`.perf-btn[data-gama="${GAMA_SELECCIONADA}"]`).classList.add('active');
     document.getElementById('perfActual').innerText = nuevaGama === 'auto' ? `Modo: Automático (${GAMA})` : `Modo: ${nuevaGama}`;
-    
     modsMostrados = 0;
     cargarModsPaginados(obtenerModsFiltrados(), true);
     togglePerf();
@@ -411,10 +493,8 @@
   window.cambiarFuente = function(tamano) {
     document.body.classList.remove('font-small', 'font-normal', 'font-large');
     document.body.classList.add('font-' + tamano);
-    
     document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('font' + tamano.charAt(0).toUpperCase() + tamano.slice(1)).classList.add('active');
-    
     localStorage.setItem('fontSize', tamano);
   }
   
@@ -424,7 +504,6 @@
   const fontGuardada = localStorage.getItem('fontSize') || 'normal';
   cambiarFuente(fontGuardada);
   
-  // ===== MODAL CON FIX DE SCROLL =====
   window.abrirDetalles = function(titulo, tipo, version, desc, img, link, key) {
     document.getElementById('modalTitulo').innerText = titulo;
     document.getElementById('modalSub').innerText = tipo;
@@ -471,27 +550,38 @@
   }
 
   window.darLike = function(key, nombre) {
-    let likes = JSON.parse(localStorage.getItem('favoritos') || '[]');
-    const btn = event.target;
-    
-    if(!likes.includes(key)) {
-      likes.push(key);
-      btn.classList.add('active');
-      btn.innerText = '💖';
+    if (usuarioActual) {
+      const favRef = ref(db, `usuarios/${usuarioActual.uid}/favoritos/${key}`);
+      get(favRef).then(snap => {
+        if (snap.exists()) {
+          set(favRef, null);
+        } else {
+          set(favRef, true);
+        }
+      });
     } else {
-      likes = likes.filter(k => k !== key);
-      btn.classList.remove('active');
-      btn.innerText = '❤️';
+      let likes = JSON.parse(localStorage.getItem('favoritos') || '[]');
+      const btn = event.target;
+      if(!likes.includes(key)) {
+        likes.push(key);
+        btn.classList.add('active');
+        btn.innerText = '💖';
+      } else {
+        likes = likes.filter(k => k !== key);
+        btn.classList.remove('active');
+        btn.innerText = '❤️';
+      }
+      localStorage.setItem('favoritos', JSON.stringify(likes));
+      cargarFavoritosLocal();
     }
-    localStorage.setItem('favoritos', JSON.stringify(likes));
-    cargarFavoritos();
   }
 
   window.mostrarFavoritos = function() {
     document.getElementById('inicio-section').style.display = 'none';
     document.getElementById('favoritos-section').classList.add('active');
     toggleMenu();
-    cargarFavoritos();
+    if (usuarioActual) cargarFavoritosUsuario();
+    else cargarFavoritosLocal();
   }
 
   window.mostrarSeccion = function(seccion) {
@@ -504,21 +594,37 @@
     }
   }
 
-  function cargarFavoritos() {
+  function cargarFavoritosLocal() {
     const favsGrid = document.getElementById('favoritos-grid');
     const likes = JSON.parse(localStorage.getItem('favoritos') || '[]');
-    
     if(likes.length === 0) {
       favsGrid.innerHTML = '<div class="vacio">Aún no has añadido complementos a favoritos.<br>Explora el catálogo y guarda tus preferidos.</div>';
       return;
     }
-    
     favsGrid.innerHTML = '';
     todosLosMods.forEach(mod => {
       if(likes.includes(mod.key)) {
-        const esFavorito = true;
-        favsGrid.innerHTML += crearCard(mod, esFavorito);
+        favsGrid.innerHTML += crearCard(mod, true);
       }
+    });
+  }
+
+  function cargarFavoritosUsuario() {
+    const favsGrid = document.getElementById('favoritos-grid');
+    const favRef = ref(db, `usuarios/${usuarioActual.uid}/favoritos`);
+    onValue(favRef, (snap) => {
+      const likes = snap.val() || {};
+      const keys = Object.keys(likes);
+      if(keys.length === 0) {
+        favsGrid.innerHTML = '<div class="vacio">Aún no has añadido complementos a favoritos.<br>Explora el catálogo y guarda tus preferidos.</div>';
+        return;
+      }
+      favsGrid.innerHTML = '';
+      todosLosMods.forEach(mod => {
+        if(keys.includes(mod.key)) {
+          favsGrid.innerHTML += crearCard(mod, true);
+        }
+      });
     });
   }
 
@@ -535,7 +641,6 @@
   function optimizarImagen(url, calidad) {
     if(!url) return 'https://via.placeholder.com/300x150/10B981/FFFFFF?text=LOKY';
     if(!url.includes('firebasestorage')) return url;
-    
     if(calidad === 'low') return url + '?alt=media&w=200&q=40';
     if(calidad === 'medium') return url + '?alt=media&w=300&q=60';
     if(calidad === 'high') return url + '?alt=media&w=400&q=80';
@@ -546,10 +651,9 @@
   const popularesGrid = document.getElementById('populares-grid');
 
   function crearCard(mod, esFavorito = false) {
-    const likes = JSON.parse(localStorage.getItem('favoritos') || '[]');
-    const activo = likes.includes(mod.key) || esFavorito;
+    const likes = usuarioActual ? [] : JSON.parse(localStorage.getItem('favoritos') || '[]');
+    const activo = esFavorito;
     const imgOptimizada = optimizarImagen(mod.imagen, CONFIG.imagenes);
-    
     return `
       <div class="card">
         <button class="btn-fav ${activo ? 'active' : ''}" onclick="darLike('${mod.key}', '${mod.nombre.replace(/'/g, "\\'")}')">${activo ? '💖' : '❤️'}</button>
@@ -570,22 +674,17 @@
     return todosLosMods.filter(mod => mod.categoria.toLowerCase() === filtroActual);
   }
 
-  // ===== CARGAR MODS CON SKELETONS =====
   function cargarModsPaginados(modsArray, resetear = false) {
     if(cargando) return;
     cargando = true;
-    
     if(resetear) {
-      // MUESTRA SKELETONS AL CARGAR
       novedadesGrid.innerHTML = SKELETON.repeat(CONFIG.modsInicial);
       popularesGrid.innerHTML = '';
       modsMostrados = 0;
     }
-    
     const inicio = modsMostrados;
     const fin = inicio + (resetear ? CONFIG.modsInicial : MODS_POR_PAGINA);
     const modsParaCargar = modsArray.slice(inicio, fin);
-    
     if(modsParaCargar.length === 0) {
       if(resetear) {
         novedadesGrid.innerHTML = '<div class="vacio">Aún no se han añadido complementos, pronto se añadirán</div>';
@@ -593,9 +692,7 @@
       cargando = false;
       return;
     }
-    
     if(resetear) novedadesGrid.innerHTML = '';
-    
     modsParaCargar.forEach((mod, index) => {
       const card = crearCard(mod);
       if(inicio + index < 4) {
@@ -604,11 +701,8 @@
         popularesGrid.innerHTML += card;
       }
     });
-    
     modsMostrados += modsParaCargar.length;
     cargando = false;
-    
-    // Activar lazy load de imágenes con IntersectionObserver
     if('IntersectionObserver' in window) {
       const images = document.querySelectorAll('.card img[loading="lazy"]');
       const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -624,14 +718,11 @@
     }
   }
 
-  // Scroll infinito
   window.addEventListener('scroll', () => {
     if(document.getElementById('favoritos-section').classList.contains('active')) return;
-    
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    
     if(scrollTop + windowHeight >= documentHeight - 300) {
       cargarModsPaginados(obtenerModsFiltrados());
     }
@@ -641,22 +732,12 @@
     if(e.target.classList.contains('btn-detalles')) {
       const key = e.target.getAttribute('data-key');
       const mod = todosLosMods.find(m => m.key === key);
-      
       if(mod) {
-        abrirDetalles(
-          mod.nombre, 
-          mod.categoria, 
-          mod.version, 
-          mod.desc, 
-          mod.imagen, 
-          mod.link, 
-          mod.key
-        );
+        abrirDetalles(mod.nombre, mod.categoria, mod.version, mod.desc, mod.imagen, mod.link, mod.key);
       }
     }
   });
 
-  // PINTA SKELETONS AL INICIAR
   novedadesGrid.innerHTML = SKELETON.repeat(CONFIG.modsInicial);
 
   onValue(ref(db, 'mods'), (snapshot) => {
@@ -667,7 +748,8 @@
     } else {
       novedadesGrid.innerHTML = '<div class="vacio">Aún no se han añadido complementos, pronto se añadirán</div>';
     }
-    cargarFavoritos();
+    if (usuarioActual) cargarFavoritosUsuario();
+    else cargarFavoritosLocal();
   });
 </script>
 </body>
