@@ -20,7 +20,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
   body { background: var(--bg); color: var(--text); transition: 0.3s ease-out; font-size: var(--font-size-base); }
   
-  /* ANIMACIONES SUAVES v1.4 */
     * {
     transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
@@ -37,7 +36,7 @@
     box-shadow: 0 12px 24px rgba(16,185,129,0.2);
   }
   
-  .btn, .download-btn, .theme-btn, .font-btn, .perf-btn, .login-social {
+  .btn, .download-btn, .theme-btn, .font-btn, .perf-btn, .login-social, .input-field {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .btn:hover, .download-btn:hover { transform: translateY(-2px); }
@@ -71,7 +70,6 @@
     transform: translateX(4px);
   }
   
-  /* OPTIMIZACIÓN POR GAMA */
   body[data-gama="baja"] *, body[data-gama="baja-media"] * {
     transition: none !important;
     animation: none !important;
@@ -89,7 +87,6 @@
     box-shadow: none !important;
   }
   
-  /* SKELETONS LOADING */
   .skeleton {
     background: var(--card);
     border-radius: 12px;
@@ -129,7 +126,6 @@
   .menu-btn { font-size: 24px; cursor: pointer; }
   .search { flex: 1; padding: 8px; border-radius: 20px; border: none; background: var(--bg); color: var(--text); }
   
-  /* LOGIN GOOGLE v1.4 */
   .login-btn {
     width: 36px;
     height: 36px;
@@ -234,7 +230,6 @@
   }
   .download-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
   
-  /* MODAL LOGIN v1.4 */
   .login-social {
     width: 100%;
     padding: 12px;
@@ -274,6 +269,21 @@
   .or-divider::before { left: 0; }
   .or-divider::after { right: 0; }
   
+  .input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid var(--sub);
+    background: var(--card);
+    color: var(--text);
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  
   #favoritos-section { display: none; }
   #favoritos-section.active { display: block; }
   .vacio { text-align: center; color: var(--sub); padding: 40px 20px; }
@@ -296,6 +306,17 @@
   .footer a {
     color: var(--primary);
     text-decoration: none;
+  }
+  
+  .login-form { display: none; }
+  .login-form.active { display: block; }
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    margin-bottom: 12px;
+    font-size: 14px;
   }
 </style>
 </head>
@@ -383,44 +404,57 @@
     </div>
   </div>
 
-  <!-- MODAL LOGIN v1.4 -->
+  <!-- MODAL LOGIN v1.4.1 -->
   <div class="modal" id="modalLogin">
     <div class="modal-content">
       <span class="close-modal" onclick="cerrarLogin()">×</span>
       <div class="modal-body">
-        <div class="modal-title">Iniciar Sesión</div>
-        <div class="modal-sub">Elige cómo quieres entrar</div>
-        
-        <button class="login-social" onclick="loginSocial('google')">
-          <span class="login-icon">🔵</span> Iniciar con Google
-        </button>
-        <button class="login-social" onclick="loginSocial('facebook')">
-          <span class="login-icon">📘</span> Iniciar con Facebook
-        </button>
-        <button class="login-social" onclick="loginSocial('instagram')">
-          <span class="login-icon">📷</span> Iniciar con Instagram
-        </button>
-        <button class="login-social" onclick="loginSocial('youtube')">
-          <span class="login-icon">▶️</span> Iniciar con YouTube
-        </button>
-        <button class="login-social" onclick="loginSocial('tiktok')">
-          <span class="login-icon">🎵</span> Iniciar con TikTok
-        </button>
-        <button class="login-social" onclick="loginSocial('telegram')">
-          <span class="login-icon">✈️</span> Iniciar con Telegram
-        </button>
-        <button class="login-social" onclick="loginSocial('x')">
-          <span class="login-icon">𝕏</span> Iniciar con X (Antes Twitter)
-        </button>
-        
-        <div class="or-divider">OR</div>
-        
-        <button class="login-social" onclick="loginEmail()">
-          <span class="login-icon">📧</span> Correo electrónico
-        </button>
-        <button class="login-social" onclick="loginTelefono()">
-          <span class="login-icon">📱</span> Número de teléfono
-        </button>
+        <!-- MENÚ PRINCIPAL -->
+        <div id="loginMenu">
+          <div class="modal-title">Iniciar Sesión</div>
+          <div class="modal-sub">Elige cómo quieres entrar</div>
+          
+          <button class="login-social" onclick="loginSocial('google')">
+            <span class="login-icon">🔵</span> Iniciar con Google
+          </button>
+          <button class="login-social" onclick="loginSocial('facebook')">
+            <span class="login-icon">📘</span> Iniciar con Facebook
+          </button>
+          
+          <div class="or-divider">OR</div>
+          
+          <button class="login-social" onclick="mostrarFormEmail()">
+            <span class="login-icon">📧</span> Correo electrónico
+          </button>
+          <button class="login-social" onclick="mostrarFormTelefono()">
+            <span class="login-icon">📱</span> Número de teléfono
+          </button>
+        </div>
+
+        <!-- FORM EMAIL -->
+        <div id="loginEmailForm" class="login-form">
+          <button class="back-btn" onclick="volverMenuLogin()">← Volver</button>
+          <div class="modal-title">Correo electrónico</div>
+          <input type="email" id="emailInput" class="input-field" placeholder="tu@correo.com">
+          <input type="password" id="passwordInput" class="input-field" placeholder="Contraseña">
+          <button class="download-btn" onclick="loginConEmail()" style="margin-top: 8px;">Iniciar Sesión</button>
+          <button class="btn" onclick="registrarConEmail()" style="margin-top: 8px;">Crear cuenta nueva</button>
+        </div>
+
+        <!-- FORM TELÉFONO -->
+        <div id="loginTelefonoForm" class="login-form">
+          <button class="back-btn" onclick="volverMenuLogin()">← Volver</button>
+          <div class="modal-title">Número de teléfono</div>
+          <div id="telefonoStep1">
+            <input type="tel" id="telefonoInput" class="input-field" placeholder="+52 123 456 7890">
+            <div id="recaptcha-container"></div>
+            <button class="download-btn" onclick="enviarCodigoSMS()" style="margin-top: 8px;">Enviar código SMS</button>
+          </div>
+          <div id="telefonoStep2" style="display:none;">
+            <input type="text" id="codigoInput" class="input-field" placeholder="Código de 6 dígitos" maxlength="6">
+            <button class="download-btn" onclick="verificarCodigoSMS()" style="margin-top: 8px;">Verificar código</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -437,10 +471,10 @@
       Minecraft es marca de Mojang Studios. Esta web no está afiliada a Mojang.
     </div>
   </div>
-  <script type="module">
+    <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, onValue, get, update, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-  import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBXhM5bFmzlVvJ5IZoz7wBiYwK05IGJQdM",
@@ -458,8 +492,9 @@
   const auth = getAuth(app);
   const providerGoogle = new GoogleAuthProvider();
   const providerFacebook = new FacebookAuthProvider();
+  let confirmationResult = null;
 
-  // ===== LOGIN v1.3 =====
+  // ===== LOGIN v1.4.1 =====
   let usuarioActual = null;
 
   window.abrirLogin = function() {
@@ -467,6 +502,7 @@
       if (confirm('¿Cerrar sesión?')) signOut(auth);
     } else {
       document.getElementById('modalLogin').classList.add('active');
+      volverMenuLogin();
     }
   }
 
@@ -474,19 +510,39 @@
     document.getElementById('modalLogin').classList.remove('active');
   }
 
+  window.volverMenuLogin = function() {
+    document.getElementById('loginMenu').style.display = 'block';
+    document.getElementById('loginEmailForm').classList.remove('active');
+    document.getElementById('loginTelefonoForm').classList.remove('active');
+    document.getElementById('telefonoStep1').style.display = 'block';
+    document.getElementById('telefonoStep2').style.display = 'none';
+  }
+
+  window.mostrarFormEmail = function() {
+    document.getElementById('loginMenu').style.display = 'none';
+    document.getElementById('loginEmailForm').classList.add('active');
+  }
+
+  window.mostrarFormTelefono = function() {
+    document.getElementById('loginMenu').style.display = 'none';
+    document.getElementById('loginTelefonoForm').classList.add('active');
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': () => {},
+        'expired-callback': () => {}
+      });
+    }
+  }
+
   window.loginSocial = function(red) {
     let provider = null;
-    
     if (red === 'google') {
       provider = providerGoogle;
     } else if (red === 'facebook') {
       provider = providerFacebook;
       provider.addScope('email');
-    } else {
-      alert('Para activar ' + red + ':\n1. Ve a Firebase Console > Authentication > Sign-in method\n2. Activa el proveedor ' + red + '\n3. Agrega las credenciales de la app');
-      return;
     }
-
     signInWithPopup(auth, provider)
       .then(() => cerrarLogin())
       .catch(e => {
@@ -495,19 +551,57 @@
       });
   }
 
-  window.loginEmail = function() {
-    alert('Login con correo: Actívalo en Firebase Console > Authentication > Sign-in method > Email/Password');
+  window.loginConEmail = function() {
+    const email = document.getElementById('emailInput').value;
+    const pass = document.getElementById('passwordInput').value;
+    if (!email || !pass) return alert('Completa todos los campos');
+    signInWithEmailAndPassword(auth, email, pass)
+      .then(() => cerrarLogin())
+      .catch(e => alert('Error: ' + e.message));
   }
 
-  window.loginTelefono = function() {
-    alert('Login con teléfono: Actívalo en Firebase Console > Authentication > Sign-in method > Phone');
+  window.registrarConEmail = function() {
+    const email = document.getElementById('emailInput').value;
+    const pass = document.getElementById('passwordInput').value;
+    if (!email || !pass) return alert('Completa todos los campos');
+    if (pass.length < 6) return alert('La contraseña debe tener al menos 6 caracteres');
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then(() => cerrarLogin())
+      .catch(e => alert('Error: ' + e.message));
+  }
+
+  window.enviarCodigoSMS = function() {
+    const telefono = document.getElementById('telefonoInput').value;
+    if (!telefono) return alert('Ingresa tu número con código de país: +52...');
+    signInWithPhoneNumber(auth, telefono, window.recaptchaVerifier)
+      .then((result) => {
+        confirmationResult = result;
+        document.getElementById('telefonoStep1').style.display = 'none';
+        document.getElementById('telefonoStep2').style.display = 'block';
+        alert('Código enviado a ' + telefono);
+      })
+      .catch(e => {
+        alert('Error: ' + e.message);
+        window.recaptchaVerifier.render().then(widgetId => {
+          grecaptcha.reset(widgetId);
+        });
+      });
+  }
+
+  window.verificarCodigoSMS = function() {
+    const codigo = document.getElementById('codigoInput').value;
+    if (!codigo) return alert('Ingresa el código');
+    confirmationResult.confirm(codigo)
+      .then(() => cerrarLogin())
+      .catch(e => alert('Código incorrecto: ' + e.message));
   }
 
   onAuthStateChanged(auth, (user) => {
     const btn = document.getElementById('loginBtn');
     if (user) {
       usuarioActual = user;
-      btn.innerHTML = `<img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" alt="User">`;
+      const nombre = user.displayName || user.email || user.phoneNumber || 'User';
+      btn.innerHTML = `<img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(nombre)}" alt="User">`;
       cargarFavoritosUsuario();
     } else {
       usuarioActual = null;
@@ -516,7 +610,7 @@
     }
   });
 
-  // ===== DETECTOR DE GAMA v1.3 FIX =====
+  // ===== DETECTOR DE GAMA v1.4.1 BUG FIX =====
   function detectarGama() {
     const memoria = navigator.deviceMemory || 2;
     const nucleos = navigator.hardwareConcurrency || 2;
@@ -550,7 +644,7 @@
   let GAMA_AUTO = detectarGama();
   let GAMA_SELECCIONADA = localStorage.getItem('gamaManual') || 'auto';
   let GAMA = GAMA_SELECCIONADA === 'auto' ? GAMA_AUTO : GAMA_SELECCIONADA;
-  let CONFIG = CONFIG_GAMAS[GAMA]; // AQUÍ ESTABA EL BUG WEE 💀
+  let CONFIG = CONFIG_GAMAS[GAMA]; // ✅ BUG ARREGLADO
 
   document.body.setAttribute('data-gama', GAMA);
 
@@ -590,7 +684,7 @@
       GAMA_SELECCIONADA = nuevaGama;
       GAMA = nuevaGama;
     }
-    CONFIG = CONFIG_GAMAS[GAMA]; // AQUÍ TAMBIÉN WEE
+    CONFIG = CONFIG_GAMAS[GAMA]; // ✅ BUG ARREGLADO
     MODS_POR_PAGINA = CONFIG.modsPorScroll;
     document.body.setAttribute('data-gama', GAMA);
     document.querySelectorAll('.perf-btn').forEach(btn => btn.classList.remove('active'));
@@ -879,3 +973,5 @@
     else cargarFavoritosLocal();
   });
   </script>
+</body>
+</html>
