@@ -228,7 +228,8 @@
     position: sticky;
     bottom: 0;
   }
-  .download-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
+  .download-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 6px 0; }
+  .download-secondary { background: var(--card); color: var(--text); border: 1px solid var(--sub); }
   
   .login-social {
     width: 100%;
@@ -284,8 +285,8 @@
     border-color: var(--primary);
   }
   
-  #favoritos-section { display: none; }
-  #favoritos-section.active { display: block; }
+  #favoritos-section, #descargas-section { display: none; }
+  #favoritos-section.active, #descargas-section.active { display: block; }
   .vacio { text-align: center; color: var(--sub); padding: 40px 20px; }
   
   .footer {
@@ -318,6 +319,56 @@
     margin-bottom: 12px;
     font-size: 14px;
   }
+
+  /* DESCARGAS AUTOMÁTICAS */
+  .descarga-item {
+    background: var(--card);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .descarga-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .descarga-info {
+    flex: 1;
+  }
+  .descarga-nombre {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .descarga-fecha {
+    font-size: 11px;
+    color: var(--sub);
+  }
+  .descarga-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .descarga-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .descarga-importar {
+    background: var(--primary);
+    color: white;
+  }
+  .descarga-borrar {
+    background: #EF4444;
+    color: white;
+  }
 </style>
 </head>
 <body>
@@ -332,6 +383,7 @@
     <div class="logo">⬡ LOKY-CRAFT <span style="float:right;cursor:pointer;" onclick="toggleMenu()">✕</span></div>
     <div class="nav-item" onclick="mostrarSeccion('inicio')">🏠 Inicio</div>
     <div class="nav-item" onclick="mostrarFavoritos()">❤️ Favoritos</div>
+    <div class="nav-item" onclick="mostrarDescargas()">⬇️ Descargas automáticas</div>
     <div class="nav-title">CATEGORÍAS</div>
     <div class="nav-item" onclick="filtrarCategoria('optimizados')">⚡ Complementos Optimizados</div>
     <div class="nav-item" onclick="filtrarCategoria('addons')">🧩 Addons</div>
@@ -387,6 +439,14 @@
     </div>
   </div>
 
+  <!-- NUEVA SECCIÓN: DESCARGAS AUTOMÁTICAS -->
+  <div class="section" id="descargas-section">
+    <div class="section-title">⬇️ Descargas automáticas</div>
+    <div id="descargas-lista">
+      <div class="vacio">No tienes descargas guardadas.<br>Descarga un mod con "Descargar directamente" para verlo aquí.</div>
+    </div>
+  </div>
+
   <!-- MODAL DETALLES -->
   <div class="modal" id="modalDetalles">
     <div class="modal-content">
@@ -399,7 +459,8 @@
         <div id="modalDesc" class="modal-desc"></div>
       </div>
       <div class="modal-footer">
-        <button id="modalBtn" class="download-btn">⬇️ DESCARGAR AHORA</button>
+        <button id="modalBtnLink" class="download-btn">⬇️ Descargar mediante enlace</button>
+        <button id="modalBtnDirecto" class="download-btn download-secondary" style="display:none;">⚡ Descargar directamente</button>
       </div>
     </div>
   </div>
@@ -460,7 +521,7 @@
   </div>
 
   <div class="footer">
-    <div class="logo-footer">⬡ Loky-Craft v1.3</div>
+    <div class="logo-footer">⬡ Loky-Craft v1.4</div>
     <div>© 2026 Loky-Craft-Web.</div>
     <div style="margin-top:8px;">
       Desarrollo: JRLOKY-ESTUDIOS Diseño: Loky-Craft Servidor: Loky-Craft 
@@ -603,14 +664,16 @@
       const nombre = user.displayName || user.email || user.phoneNumber || 'User';
       btn.innerHTML = `<img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(nombre)}" alt="User">`;
       cargarFavoritosUsuario();
+      cargarDescargasUsuario();
     } else {
       usuarioActual = null;
       btn.innerHTML = '👤';
       cargarFavoritosLocal();
+      cargarDescargasLocal();
     }
   });
 
-  // ===== DETECTOR DE GAMA v1.4.1 BUG FIX =====
+  // ===== DETECTOR DE GAMA v1.4.1 =====
   function detectarGama() {
     const memoria = navigator.deviceMemory || 2;
     const nucleos = navigator.hardwareConcurrency || 2;
@@ -644,7 +707,7 @@
   let GAMA_AUTO = detectarGama();
   let GAMA_SELECCIONADA = localStorage.getItem('gamaManual') || 'auto';
   let GAMA = GAMA_SELECCIONADA === 'auto' ? GAMA_AUTO : GAMA_SELECCIONADA;
-  let CONFIG = CONFIG_GAMAS[GAMA]; // ✅ BUG ARREGLADO
+  let CONFIG = CONFIG_GAMAS[GAMA];
 
   document.body.setAttribute('data-gama', GAMA);
 
@@ -684,7 +747,7 @@
       GAMA_SELECCIONADA = nuevaGama;
       GAMA = nuevaGama;
     }
-    CONFIG = CONFIG_GAMAS[GAMA]; // ✅ BUG ARREGLADO
+    CONFIG = CONFIG_GAMAS[GAMA];
     MODS_POR_PAGINA = CONFIG.modsPorScroll;
     document.body.setAttribute('data-gama', GAMA);
     document.querySelectorAll('.perf-btn').forEach(btn => btn.classList.remove('active'));
@@ -726,16 +789,32 @@
   const fontGuardada = localStorage.getItem('fontSize') || 'normal';
   cambiarFuente(fontGuardada);
   
-  window.abrirDetalles = function(titulo, tipo, version, desc, img, link, key) {
+  window.abrirDetalles = function(titulo, tipo, version, desc, img, link, linkDirecto, key) {
     document.getElementById('modalTitulo').innerText = titulo;
     document.getElementById('modalSub').innerText = tipo;
     document.getElementById('modalVersion').innerText = 'Versión: ' + version;
     document.getElementById('modalDesc').innerText = desc;
     document.getElementById('modalImg').src = optimizarImagen(img, CONFIG.imagenes);
-    document.getElementById('modalBtn').onclick = function(){ 
+    
+    // Botón enlace normal
+    document.getElementById('modalBtnLink').onclick = function(){ 
       contarDescarga(key);
       window.open(link, '_blank'); 
     };
+    
+    // Botón descarga directa
+    const btnDirecto = document.getElementById('modalBtnDirecto');
+    if(linkDirecto && linkDirecto.trim() !== '') {
+      btnDirecto.style.display = 'block';
+      btnDirecto.onclick = function(){ 
+        contarDescarga(key);
+        guardarDescarga({key, nombre: titulo, imagen: img, linkDirecto, fecha: Date.now()});
+        window.open(linkDirecto, '_blank'); 
+      };
+    } else {
+      btnDirecto.style.display = 'none';
+    }
+    
     document.getElementById('modalDetalles').classList.add('active');
     if(navigator.vibrate) navigator.vibrate([50,50,50]);
   }
@@ -801,15 +880,26 @@
   window.mostrarFavoritos = function() {
     document.getElementById('inicio-section').style.display = 'none';
     document.getElementById('favoritos-section').classList.add('active');
+    document.getElementById('descargas-section').classList.remove('active');
     toggleMenu();
     if (usuarioActual) cargarFavoritosUsuario();
     else cargarFavoritosLocal();
+  }
+
+  window.mostrarDescargas = function() {
+    document.getElementById('inicio-section').style.display = 'none';
+    document.getElementById('favoritos-section').classList.remove('active');
+    document.getElementById('descargas-section').classList.add('active');
+    toggleMenu();
+    if (usuarioActual) cargarDescargasUsuario();
+    else cargarDescargasLocal();
   }
 
   window.mostrarSeccion = function(seccion) {
     if(seccion === 'inicio') {
       document.getElementById('inicio-section').style.display = 'block';
       document.getElementById('favoritos-section').classList.remove('active');
+      document.getElementById('descargas-section').classList.remove('active');
       filtroActual = null;
       modsMostrados = 0;
       cargarModsPaginados(todosLosMods, true);
@@ -848,6 +938,85 @@
         }
       });
     });
+  }
+
+  // ===== DESCARGAS AUTOMÁTICAS =====
+  function guardarDescarga(mod) {
+    if (usuarioActual) {
+      const descRef = ref(db, `usuarios/${usuarioActual.uid}/descargas/${mod.key}`);
+      set(descRef, mod);
+    } else {
+      let descargas = JSON.parse(localStorage.getItem('descargas') || '[]');
+      if(!descargas.find(d => d.key === mod.key)) {
+        descargas.unshift(mod);
+        localStorage.setItem('descargas', JSON.stringify(descargas));
+      }
+    }
+  }
+
+  function cargarDescargasLocal() {
+    const lista = document.getElementById('descargas-lista');
+    const descargas = JSON.parse(localStorage.getItem('descargas') || '[]');
+    if(descargas.length === 0) {
+      lista.innerHTML = '<div class="vacio">No tienes descargas guardadas.<br>Descarga un mod con "Descargar directamente" para verlo aquí.</div>';
+      return;
+    }
+    lista.innerHTML = '';
+    descargas.forEach(mod => {
+      lista.innerHTML += crearDescargaItem(mod);
+    });
+  }
+
+  function cargarDescargasUsuario() {
+    const lista = document.getElementById('descargas-lista');
+    const descRef = ref(db, `usuarios/${usuarioActual.uid}/descargas`);
+    onValue(descRef, (snap) => {
+      const descargas = snap.val() || {};
+      const mods = Object.values(descargas).sort((a,b) => b.fecha - a.fecha);
+      if(mods.length === 0) {
+        lista.innerHTML = '<div class="vacio">No tienes descargas guardadas.<br>Descarga un mod con "Descargar directamente" para verlo aquí.</div>';
+        return;
+      }
+      lista.innerHTML = '';
+      mods.forEach(mod => {
+        lista.innerHTML += crearDescargaItem(mod);
+      });
+    });
+  }
+
+  function crearDescargaItem(mod) {
+    const fecha = new Date(mod.fecha).toLocaleDateString('es-MX');
+    return `
+      <div class="descarga-item">
+        <img src="${mod.imagen}" class="descarga-img" alt="${mod.nombre}">
+        <div class="descarga-info">
+          <div class="descarga-nombre">${mod.nombre}</div>
+          <div class="descarga-fecha">Descargado: ${fecha}</div>
+        </div>
+        <div class="descarga-btns">
+          <button class="descarga-btn descarga-importar" onclick="importarAMinecraft('${mod.linkDirecto}')">Importar a Minecraft</button>
+          <button class="descarga-btn descarga-borrar" onclick="borrarDescarga('${mod.key}')">Borrar</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.importarAMinecraft = function(link) {
+    window.open(link, '_blank');
+    alert('Se abrirá el archivo. Selecciona "Abrir con Minecraft" en tu teléfono 📱');
+  }
+
+  window.borrarDescarga = function(key) {
+    if(!confirm('¿Borrar esta descarga de la lista?')) return;
+    if (usuarioActual) {
+      const descRef = ref(db, `usuarios/${usuarioActual.uid}/descargas/${key}`);
+      set(descRef, null);
+    } else {
+      let descargas = JSON.parse(localStorage.getItem('descargas') || '[]');
+      descargas = descargas.filter(d => d.key !== key);
+      localStorage.setItem('descargas', JSON.stringify(descargas));
+      cargarDescargasLocal();
+    }
   }
 
   async function contarDescarga(key) {
@@ -940,7 +1109,7 @@
   }
 
   window.addEventListener('scroll', () => {
-    if(document.getElementById('favoritos-section').classList.contains('active')) return;
+    if(document.getElementById('favoritos-section').classList.contains('active') || document.getElementById('descargas-section').classList.contains('active')) return;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
@@ -954,7 +1123,7 @@
       const key = e.target.getAttribute('data-key');
       const mod = todosLosMods.find(m => m.key === key);
       if(mod) {
-        abrirDetalles(mod.nombre, mod.categoria, mod.version, mod.desc, mod.imagen, mod.link, mod.key);
+        abrirDetalles(mod.nombre, mod.categoria, mod.version, mod.desc, mod.imagen, mod.link, mod.linkDirecto, mod.key);
       }
     }
   });
@@ -969,8 +1138,13 @@
     } else {
       novedadesGrid.innerHTML = '<div class="vacio">Aún no se han añadido complementos, pronto se añadirán</div>';
     }
-    if (usuarioActual) cargarFavoritosUsuario();
-    else cargarFavoritosLocal();
+    if (usuarioActual) {
+      cargarFavoritosUsuario();
+      cargarDescargasUsuario();
+    } else {
+      cargarFavoritosLocal();
+      cargarDescargasLocal();
+    }
   });
   </script>
 </body>
